@@ -1,2 +1,3 @@
+certifi
 robotframework-seleniumlibrary
-wopee_rf-1.1.0.tar.gz
+https://github.com/Wopee-io/robotframework-template/releases/download/v1.1.0/wopee_rf-1.1.0.tar.gz

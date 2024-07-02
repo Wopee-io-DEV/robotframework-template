@@ -1,9 +1,8 @@
 install:
-	python -m venv .venv && \
+	python3 -m venv .venv && \
 	source .venv/bin/activate && \
 	pip install -r requirements.txt && \
-	cp .env.example .env
-
+	[ ! -e ".env" ] && cp .env.example .env || echo ".env file already exists"
 test:
 	source .venv/bin/activate && \
 	robot tests/
