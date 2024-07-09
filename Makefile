@@ -7,7 +7,7 @@ install:
 	[ ! -e ".env" ] && cp .env.example .env || echo ".env file already exists"
 test:
 	source .venv/bin/activate && \
-	robot tests/
+	robot tests/selenium_standalone.robot
 
 clean:
 	rm -rf reports/
