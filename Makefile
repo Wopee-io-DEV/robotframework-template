@@ -5,7 +5,7 @@ install:
 	source .venv/bin/activate && \
 	pip install -r requirements.txt && \
 	[ ! -e ".env" ] && cp .env.example .env || echo ".env file already exists" && \
-	python3 -m Browser.entry init
+	python3 chromedriver.py
 
 test:
 	source .venv/bin/activate && \
