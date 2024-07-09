@@ -10,5 +10,10 @@ test:
 	source .venv/bin/activate && \
 	robot tests/agnostic_standalone.robot
 
+test.selenium.listener:
+	source .venv/bin/activate && \
+	export WOPEE_DRIVER_LIBRARY=SeleniumLibrary && \
+	robot --listener 'wopee_rf.Listener:--dot_env_path:.env' tests/selenium_listener.robot
+
 clean:
 	rm -rf reports/
