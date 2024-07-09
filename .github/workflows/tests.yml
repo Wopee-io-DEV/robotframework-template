@@ -35,4 +35,4 @@ jobs:
                 # WOPEE_PIXEL_TO_PIXEL_DIFF_TOLERANCE: "0.1"
             run: |
                 make install
-                make test.selenium.listener
+                make test
