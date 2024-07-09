@@ -14,20 +14,8 @@ on:
         default: tests/01-main.robot
 
 jobs:
-    configure:
-        runs-on: ubuntu-latest
-        outputs:
-            uid_gid: ${{ env.UID_GID }}
-        steps:
-          - id: get-user
-            run: echo "UID_GID=$(id -u):$(id -g)" >> $GITHUB_ENV
-
     test:
-        runs-on: ubuntu-latest
-        needs: configure
-        container: 
-            image: ghcr.io/wopee-io/runtime
-            options: --user ${{ needs.configure.outputs.uid_gid }}
+        runs-on: self-hosted
 
         steps:
           - uses: actions/checkout@v4
