@@ -15,5 +15,12 @@ test.selenium.listener:
 	export WOPEE_DRIVER_LIBRARY=SeleniumLibrary && \
 	robot --listener 'wopee_rf.Listener:--dot_env_path:.env' tests/selenium_listener.robot
 
+
+test.browser.listener:
+	source .venv/bin/activate && \
+	python3 -m Browser init && \
+	export WOPEE_DRIVER_LIBRARY=BrowserLibrary && \
+	robot --listener 'wopee_rf.Listener:--dot_env_path:.env' tests/browser_listener.robot
+
 clean:
 	rm -rf reports/
