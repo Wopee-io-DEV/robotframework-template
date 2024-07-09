@@ -18,7 +18,7 @@ test.selenium.listener:
 
 test.browser.listener:
 	source .venv/bin/activate && \
-	python3 -m Browser init && \
+	python3 -m Browser.entry init && \
 	export WOPEE_DRIVER_LIBRARY=BrowserLibrary && \
 	robot --listener 'wopee_rf.Listener:--dot_env_path:.env' tests/browser_listener.robot
 
