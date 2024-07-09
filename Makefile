@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 install:
 	python3 --version && \
 	pwd && \
