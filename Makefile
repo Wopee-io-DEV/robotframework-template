@@ -9,7 +9,7 @@ install:
 
 test:
 	source .venv/bin/activate && \
-	robot tests/selenium_standalone.robot
+	robot tests/agnostic_standalone.robot
 
 clean:
 	rm -rf reports/
