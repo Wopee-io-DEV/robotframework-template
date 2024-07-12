@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 install:
-	python3 -m venv .venv && \
+	python3 -m venv --system-site-packages .venv && \
 	source .venv/bin/activate && \
 	pip install -r requirements.txt && \
 	[ ! -e ".env" ] && cp .env.example .env || echo ".env file already exists"
