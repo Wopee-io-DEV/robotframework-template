@@ -5,9 +5,8 @@ Test Setup       Open Application
 Test Teardown    Close Application
 
 *** Variables ***
-# ${BROWSER}    chrome
 ${BROWSER}      headlesschrome
-${URL}          %{WOPEE_PROJECT_URL}
+${URL}          %{WOPEE_PROJECT_URL=https://dronjo.wopee.io}
 ${PSWD}         admin
 
 *** Test Cases ***
@@ -33,7 +32,6 @@ Gallery page
     Click    "Gallery"
 
     Get Title    should start with    Gallery — 
-
     Get Element Count    css=.gallery img    ==    3
 
 Check out

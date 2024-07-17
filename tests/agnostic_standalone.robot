@@ -1,5 +1,5 @@
 *** Settings ***
-Library     SeleniumLibrary
+Library     SeleniumLibrary  screenshot_root_directory=reports/screenshots/selenium
 Library     wopee_rf.Wopee    dot_env_path=.env
 
 
