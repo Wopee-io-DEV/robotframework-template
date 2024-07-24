@@ -1,17 +1,20 @@
 name: Run Robot Framework tests
+run-name: "Run Robot Framework tests: ${{ inputs.selected-test }}"
 
 on:
   workflow_dispatch:
     inputs:
-      robot-file:
-        description: 'Select robot file with tests to run'
+      selected-test:
+        description: 'Select which tests to run'
         type: choice
         options:
-          - tests/01-main.robot
-          - tests/02-dronjo-simple.robot
-          - tests/03-dronjo-advanced.robot
+          - test
+          - test.selenium
+          - test.browser
+          - test.selenium.listener
+          - test.browser.listener
         required: true
-        default: tests/01-main.robot
+        default: test
 
 jobs:
     test:
@@ -34,8 +37,8 @@ jobs:
                 # WOPEE_ENABLE_SOFT_ASSERT: "true"
                 # WOPEE_PIXEL_TO_PIXEL_DIFF_TOLERANCE: "0.1"
             run: |
-                python3 -m venv --system-site-packages .venv && \
-                source .venv/bin/activate && \
-                pip install -r requirements.txt && \
-                [ ! -e ".env" ] && cp .env.example .env || echo ".env file already exists"
-                make test
+              python3 -m venv --system-site-packages .venv && \
+              source .venv/bin/activate && \
+              pip install -r requirements.txt && \
+              [ ! -e ".env" ] && cp .env.example .env || echo ".env file already exists"
+              make ${{ inputs.selected-test }}
