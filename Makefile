@@ -25,14 +25,14 @@ test.selenium.listener:
 	source .venv/bin/activate && \
 	export WOPEE_DRIVER_LIBRARY=SeleniumLibrary && \
 	export WOPEE_TRACKED_KEYWORDS="SeleniumLibrary.Click Link;SeleniumLibrary.Click Button;BuiltIn.Log;" && \
-	robot -d reports --listener 'wopee_rf.Listener:--dot_env_path:.env' tests/selenium_listener.robot
+	robot -d reports --listener 'wopee_rf.Listener:dot_env_path=.env' tests/selenium_listener.robot
 
 
 test.browser.listener:
 	source .venv/bin/activate && \
 	export WOPEE_DRIVER_LIBRARY=BrowserLibrary && \
 	export WOPEE_TRACKED_KEYWORDS="Browser.Click;BuiltIn.Log;" && \
-	robot -d reports --listener 'wopee_rf.Listener:--dot_env_path:.env' tests/browser_listener.robot
+	robot -d reports --listener 'wopee_rf.Listener:dot_env_path=.env' tests/browser_listener.robot
 
 clean:
 	rm -rf reports/

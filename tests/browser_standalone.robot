@@ -1,6 +1,6 @@
 *** Settings ***
 Library     Browser
-Library     wopee_rf.Wopee    dot_env_path=.env
+Library     wopee_rf.Standalone    dot_env_path=.env
 
 Resource    ../resources/common.robot
 
@@ -10,21 +10,19 @@ Test Teardown  Stop Scenario
 Visual test w. Browser Library Viewport
     New Page        https://wopee.io
 
-    ${timestamp}    Generate Timestamp
+    Start Suite    suite_name=${SUITE_NAME}
+    Start Scenario    scenario_name=${TEST_NAME}
 
-    Start Suite    suite_name=Suite name-${timestamp}
-    Start Scenario    scenario_name=Scenario name-${timestamp}
+    ${track_result}    Track Viewport    step_name=Track Viewport
 
-    &{payload}    Create Dictionary    step_name=Landing page
-    ${track_result}    Track Viewport    payload=&{payload}
+    Stop Scenario
 
 Visual test w. Browser Library Fullpage
     New Page        https://wopee.io
 
-    ${timestamp}    Generate Timestamp
+    Start Suite    suite_name=${SUITE_NAME}
+    Start Scenario    scenario_name=${TEST_NAME}
 
-    Start Suite    suite_name=Suite name-${timestamp}
-    Start Scenario    scenario_name=Scenario name-${timestamp}
+    ${track_result}    Track Fullpage    step_name=Track Fullpage
 
-    &{payload}    Create Dictionary    step_name=Landing page
-    ${track_result}    Track Fullpage    payload=&{payload}
+    Stop Scenario
