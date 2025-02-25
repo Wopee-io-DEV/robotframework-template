@@ -9,7 +9,7 @@ install:
 
 test:
 	source .venv/bin/activate && \
-	robot -d reports tests/agnostic_standalone.robot
+	robot -d reports tests/simple.robot
 
 test.selenium:
 	source .venv/bin/activate && \
