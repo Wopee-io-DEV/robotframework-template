@@ -1,44 +1,17 @@
 name: Run Robot Framework tests
-run-name: "Run Robot Framework tests: ${{ inputs.selected-test }}"
+run-name: ${{ github.event.client_payload.runName }}
 
 on:
+  repository_dispatch:
+    types: [run, code]
   workflow_dispatch:
-    inputs:
-      selected-test:
-        description: 'Select which tests to run'
-        type: choice
-        options:
-          - test
-          - test.selenium
-          - test.browser
-          - test.selenium.listener
-          - test.browser.listener
-        required: true
-        default: test
 
 jobs:
-    test:
-        runs-on: self-hosted
+  test:
+    name: ${{ github.event.action}}
+    runs-on: self-hosted
+    steps:
+      - uses: Wopee-io/run-robotframework@v1
+        env:
+          WOPEE_API_KEY: ${{ secrets.WOPEE_API_KEY }}
 
-        steps:
-          - uses: actions/checkout@v4
-
-          - name: Run tests
-            env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                WOPEE_API_KEY: ${{ secrets.WOPEE_API_KEY }}
-                WOPEE_API_URL: ${{ vars.WOPEE_API_URL || 'https://api.wopee.io' }}
-                WOPEE_PROJECT_UUID: ${{ vars.WOPEE_PROJECT_UUID }}
-                WOPEE_PROJECT_URL: ${{ vars.WOPEE_PROJECT_URL || 'https://dronjo.wopee.io' }}
-                # WOPEE_SCREENSHOT_VALIDATION_ENABLED: "true"
-                # WOPEE_BRANCH_NAME: master
-                # WOPEE_CI_BUILD_ID: build-123
-                # WOPEE_CUSTOM_TAGS: custom-tag
-                # WOPEE_ENABLE_SOFT_ASSERT: "true"
-                # WOPEE_PIXEL_TO_PIXEL_DIFF_TOLERANCE: "0.1"
-            run: |
-              python3 -m venv --system-site-packages .venv && \
-              source .venv/bin/activate && \
-              pip install -r requirements.txt && \
-              [ ! -e ".env" ] && cp .env.example .env || echo ".env file already exists"
-              make ${{ inputs.selected-test }}
