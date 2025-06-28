@@ -9,6 +9,7 @@ install:
 
 test:
 	source .venv/bin/activate && \
+	export WOPEE_DRIVER_LIBRARY=BrowserLibrary && \
 	python -m robot -d reports tests/simple.robot
 
 test.selenium:
