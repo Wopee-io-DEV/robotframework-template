@@ -1,4 +1,5 @@
 certifi
 robotframework-seleniumlibrary
 robotframework-browser
+robotframework-requests
 https://github.com/Wopee-io/robotframework-template/releases/download/v2.5.1/wopee_rf-2.5.1.tar.gz
