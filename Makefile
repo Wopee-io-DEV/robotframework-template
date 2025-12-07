@@ -28,12 +28,16 @@ test.selenium.listener:
 	export WOPEE_TRACKED_KEYWORDS="SeleniumLibrary.Click Link;SeleniumLibrary.Click Button;BuiltIn.Log;" && \
 	python -m robot -d reports --listener 'wopee_rf.Listener:dot_env_path=.env' tests/selenium_listener.robot
 
-
 test.browser.listener:
 	source .venv/bin/activate && \
 	export WOPEE_DRIVER_LIBRARY=BrowserLibrary && \
 	export WOPEE_TRACKED_KEYWORDS="Browser.Click;BuiltIn.Log;" && \
 	python -m robot -d reports --listener 'wopee_rf.Listener:dot_env_path=.env' tests/browser_listener.robot
+
+test.api:
+	source .venv/bin/activate && \
+	set -a && [ -f .env ] && source .env && set +a && \
+	python -m robot -d reports test-examples/api_integration.robot
 
 clean:
 	rm -rf reports/
