@@ -7,8 +7,8 @@
 3. Create virtual environment (optional) and install dependencies and init Browser library:
 
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+python -m venv .venv
+source .venv/bin/activate  # On Windows use `.venv\Scripts\activate`
 pip install -r requirements.txt
 rfbrowser init
 ```
