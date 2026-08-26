@@ -10,6 +10,10 @@ jobs:
   test:
     name: ${{ github.event.action}}
     runs-on: self-hosted
+    # A hung job otherwise holds a self-hosted runner for GitHub's 6-hour
+    # default. One did: Cypress's postinstall blocked on `unzip` for 82
+    # minutes before anyone noticed.
+    timeout-minutes: 30
     steps:
       - uses: Wopee-io/run-robotframework@v1
         env:
