@@ -9,7 +9,10 @@ on:
 jobs:
   test:
     name: ${{ github.event.action}}
-    runs-on: self-hosted
+    # Both labels must match: `wopee` pins the job to Wopee's own runner fleet
+    # now that other runners share the org. A tenant whose fleet uses another
+    # label gets this line rewritten by infra's utils/repo-sync.sh.
+    runs-on: [self-hosted, wopee]
     # A hung job otherwise holds a self-hosted runner for GitHub's 6-hour
     # default. One did: Cypress's postinstall blocked on `unzip` for 82
     # minutes before anyone noticed.
