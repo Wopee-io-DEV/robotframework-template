@@ -17,7 +17,6 @@ pip install -r requirements.txt
 ```bash
 set -a && source .env && set +a
 # or
-export WOPEE_API_URL="https://api.wopee.io"
 export WOPEE_PROJECT_UUID="your-project-uuid"
 export WOPEE_API_KEY="your-api-key"
 ```

@@ -16,7 +16,7 @@ cd <repository folder>
 cp .env.example .env
 ```
 
-Open `.env` and paste an API key after `WOPEE_API_KEY=`. Create one in Commander under **More › Settings › API Keys** (it is shown only once). The other values are already filled in for your project. If you cloned the public template instead, replace the `{…}` placeholders with your project's API URL (`https://api.wopee.io`), project UUID (same page as the API keys) and the URL of your app.
+Open `.env` and paste an API key after `WOPEE_API_KEY=`. Create one in Commander under **More › Settings › API Keys** (it is shown only once). The other values are already filled in for your project. If you cloned the public template instead, replace `put-your-project-uuid-here` with your project UUID (same page as the API keys) and `https://dronjo.wopee.io/` with the URL of your app.
 
 ```shell
 python3 -m venv .venv
@@ -57,5 +57,5 @@ Follow [Robot Framework getting started](https://docs.wopee.io/robot-framework/0
 - **`ModuleNotFoundError: No module named 'wopee_sdk'`** or **`Importing library 'wopee_rf.Standalone' failed`**: `wopee_rf` came from PyPI. Install with `pip install -r requirements.txt`.
 - **`pip install` runs for minutes or finds no `wopee_rf`**: the virtual environment uses Python older than 3.11. Delete `.venv` and create it with a newer Python.
 - **`Environment variable: WOPEE_PROJECT_UUID (missing: Field required)`**: no `.env` in the current folder. Run `robot` from the repository folder.
-- **`Not Authorised!`**: `WOPEE_API_URL`, `WOPEE_PROJECT_UUID` and `WOPEE_API_KEY` must come from the same Commander (cmd.wopee.io uses `https://api.wopee.io`).
+- **`Not Authorised!`**: the API key usually belongs to another Wopee.io instance (or another project). Create the key in the Commander you run against. `WOPEE_API_URL` is only for self-hosted instances; leave it out for cmd.wopee.io (the default is `https://api.wopee.io`).
 - **The test passes but nothing shows up in Commander**: `.env` lacks `WOPEE_SCREENSHOT_VALIDATION_ENABLED=true` or `WOPEE_DRIVER_LIBRARY=BrowserLibrary`.
