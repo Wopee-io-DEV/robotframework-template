@@ -12,12 +12,17 @@ For a complete runnable example, see `test-examples/api_integration.robot`.
 pip install -r requirements.txt
 ```
 
-2. Set required environment variables in `.env` or export them:
+2. The keywords read the shell environment, not `.env`. Load `.env` into the shell, or export the variables:
 
 ```bash
+set -a && source .env && set +a
+# or
+export WOPEE_API_URL="https://api.wopee.io"
 export WOPEE_PROJECT_UUID="your-project-uuid"
 export WOPEE_API_KEY="your-api-key"
 ```
+
+Then run `robot -d results test-examples/api_integration.robot`.
 
 3. (Optional) Install `robotframework-browser` if you want `Create Step` to automatically capture screenshots when no image is provided.
 
