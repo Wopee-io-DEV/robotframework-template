@@ -2,7 +2,6 @@
 Library     Browser
 Library     wopee_rf.Standalone    dot_env_path=.env
 
-Resource    ../resources/common.robot
 
 Test Teardown  Stop Scenario
 
