@@ -1,5 +1,5 @@
 name: Run Robot Framework tests
-run-name: ${{ github.event.client_payload.runName }}
+run-name: ${{ github.event.client_payload.runName || 'Robot Framework tests (manual)' }}
 
 on:
   repository_dispatch:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: ${{ github.event.action}}
+    name: ${{ github.event.action || 'manual' }}
     # Both labels must match: `wopee` pins the job to Wopee's own runner fleet
     # now that other runners share the org. A tenant whose fleet uses another
     # label gets this line rewritten by infra's utils/repo-sync.sh.
