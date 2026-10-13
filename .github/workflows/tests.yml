@@ -19,6 +19,10 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: Wopee-io/run-robotframework@v1
+        with:
+          project-uuid: ${{ vars.WOPEE_PROJECT_UUID }}
+          project-url: ${{ vars.WOPEE_PROJECT_URL }}
+          api-url: ${{ vars.WOPEE_API_URL }}
         env:
           WOPEE_API_KEY: ${{ secrets.WOPEE_API_KEY }}
 
