@@ -7,7 +7,7 @@ Resource    ../resources/common.robot
 
 *** Test Cases ***
 Visual test w. Browser Library Viewport
-    New Page        https://dronjo.wopee.io
+    New Page        %{WOPEE_PROJECT_URL=https://dronjo.wopee.io}
 
     ${timestamp}    Generate Timestamp
 

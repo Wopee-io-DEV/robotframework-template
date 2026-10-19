@@ -9,6 +9,7 @@ install:
 
 test:
 	source .venv/bin/activate && \
+	if [ -f .env ]; then set -a && source .env && set +a; fi && \
 	export WOPEE_DRIVER_LIBRARY=BrowserLibrary && \
 	python -m robot -d reports tests/simple.robot
 
