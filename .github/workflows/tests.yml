@@ -4,7 +4,6 @@ run-name: ${{ github.event.client_payload.runName }}
 on:
   repository_dispatch:
     types: [run, code]
-  workflow_dispatch:
 
 jobs:
   test:
