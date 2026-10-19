@@ -2,6 +2,7 @@
 Library     SeleniumLibrary  screenshot_root_directory=reports/screenshots/selenium
 Library     wopee_rf.Standalone    dot_env_path=.env
 
+Resource    ../resources/common.robot
 
 Test Teardown  Stop Scenario
 
