@@ -1,14 +1,20 @@
-# Wopee.io Robot Framework tests
+# Robot Framework + Wopee.io
 
-Robot Framework project with Wopee.io visual testing set up. The sample test `tests/wopee.robot` opens your app with the Browser library, waits until fonts and images are loaded and sends a full-page screenshot to Wopee.io. Wopee.io compares it with the approved baseline and shows the result in Commander. Start from this test and add your own pages and flows.
+This repository is your project's Robot Framework test suite with Wopee.io visual testing already wired in.
+Wopee.io created it when you created the project in [Commander](https://cmd.wopee.io), and filled in your project settings.
+The sample test `tests/simple.robot` opens your app's URL with the Browser library and takes one full-page screenshot that Wopee.io compares with an approved baseline.
+Run it as it is first, then grow it into your own tests.
 
-## Run in GitHub Actions
+## Run from Commander
 
-Open **Actions › Run Robot Framework tests › Run workflow**. Nothing to set up: when Wopee.io created this repository it stored the `WOPEE_API_KEY` secret and the `WOPEE_PROJECT_UUID`, `WOPEE_PROJECT_URL` and `WOPEE_API_URL` variables (Settings › Secrets and variables › Actions), and the workflow uses them.
+Nothing to set up. In Commander open **Runs** › **Start testing**. Commander runs this repository's tests in GitHub Actions with your project settings (the API key is the repository's `WOPEE_API_KEY` secret) and shows the results under Runs.
+
+Want the tests on every push or pull request? Add your own trigger to `.github/workflows/tests.yml`.
 
 ## Run locally
 
-Needs Python 3.11 or newer and Node.js 18 or newer (for the Browser library). On macOS, `python3` is often 3.9: install a newer one (`brew install python@3.12`) and use it for the first command.
+Needs Python 3.11 or newer, Node.js (for the Browser library), `make` and git.
+On macOS `python3` is often 3.9; check with `python3 --version`. With Homebrew, `brew install python@3.11` and run `make install` as `PATH="$(brew --prefix python@3.11)/libexec/bin:$PATH" make install`.
 
 ```shell
 git clone <this repository>
@@ -16,46 +22,49 @@ cd <repository folder>
 cp .env.example .env
 ```
 
-Open `.env` and paste an API key after `WOPEE_API_KEY=`. Create one in Commander under **More › Settings › API Keys** (it is shown only once). The other values are already filled in for your project. If you cloned the public template instead, replace `put-your-project-uuid-here` with your project UUID (same page as the API keys) and `https://dronjo.wopee.io/` with the URL of your app.
+Open `.env` and paste an API key after `WOPEE_API_KEY=`. Create one in Commander › More › Settings › API Keys (the key is shown only once).
+The other values are already your project's. Keep `.env` out of git; it is in `.gitignore`.
 
 ```shell
-python3 -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-rfbrowser init chromium
-robot -d results tests
+make install
+make test
 ```
 
-`rfbrowser init chromium` is needed once; it downloads Chromium for the Browser library. Run `robot` from the repository folder: the tests read `.env` from the current folder. Results are in `results/log.html`.
-
-`.env` is in `.gitignore`. Never commit your API key.
+`make install` creates `.venv`, installs `requirements.txt` and downloads the browsers for the Browser library (`rfbrowser init`, a few minutes the first time). `make test` loads `.env` and runs `tests/simple.robot`; the report is in `reports/`.
 
 ## Review in Commander
 
-Open your project in [Commander](https://cmd.wopee.io) › **Runs**. Every run is its own suite, `Robot Framework sample <date time>`. The first run has no baseline, so its steps are **New**: approve them to make them the baseline. Later runs are compared with it: approve a change you expect, reject a bug. Visual differences do not fail the Robot Framework test.
+Open Commander › Runs and the suite "Suite name-&lt;timestamp&gt;".
+
+- First run: the step `Landing page` has status **new**. Check the screenshot and **Approve** it; it becomes the baseline.
+- Next runs: the step is **ok** when the page looks the same, or **unresolved** when it differs. Open it to see the difference, then Approve (new baseline) or Reject.
+
+A visual difference is reported in Commander; it does not fail the Robot Framework test.
 
 ## Make it yours
 
-- **App URL**: the test opens `WOPEE_PROJECT_URL` (the App URL you entered when creating the project). Change it in `.env` for local runs (for GitHub Actions, change the App URL in Commander or the `WOPEE_PROJECT_URL` variable in Settings › Secrets and variables › Actions › Variables), or for one run: `robot -d results -v WOPEE_PROJECT_URL:https://example.com tests`.
-- **Add a check**: after an interaction, track another step:
-  ```robotframework
-  Click             text=Pricing
-  Page Ready
-  Track Fullpage    step_name=Pricing page
+- **Your app:** the sample opens `WOPEE_PROJECT_URL` (the App URL you entered in Commander). Change it in `.env` for local runs; for runs from Commander, change the App URL in Commander.
+- **Add a check:** after any interaction, one line tracks another screenshot:
+
+  ```robot
+  Track Fullpage    step_name=Contact page
   ```
-  `Page Ready` (in `resources/wopee.resource`) waits for fonts and images so the screenshot shows the finished page. Every test in `tests/` gets its own scenario: the test setup starts the suite and a scenario named after the test, the teardown stops it.
-- **Examples**: `test-examples/` has more examples (viewport screenshots, SeleniumLibrary, the listener that tracks keywords without changing the tests, the GraphQL API). They are not part of `robot -d results tests`. Run one with `robot -d results test-examples/browser_standalone.robot`; the SeleniumLibrary examples need `WOPEE_DRIVER_LIBRARY=SeleniumLibrary` in front of the command, the listener examples are described in the [docs](https://docs.wopee.io/robot-framework/02-manual-setup/), the GraphQL API example in `API_INTEGRATION.md`.
+
+  Every `step_name` in a scenario gets its own baseline.
+- **More tests:** Commander and `make test` run `tests/simple.robot`. Add test cases there; every test needs what the sample shows: `Start Suite`, `Start Scenario`, a `Track Fullpage` (or `Track Viewport`), `Stop Scenario`.
+- **Examples:** `test-examples/` shows the SeleniumLibrary, the listener (tracks a screenshot after chosen keywords) and the GraphQL API (`make test.api`, see `API_INTEGRATION.md`). They are not part of the default run; to try one, copy it into `tests/` and run its `make` target, e.g. `make test.browser` for `browser_standalone.robot`.
 
 ## Add Wopee.io to an existing Robot Framework project
 
-Follow [Robot Framework getting started](https://docs.wopee.io/robot-framework/01-getting-started/). This repository is a working reference for the files involved: `requirements.txt`, `.env.example`, `resources/wopee.resource` and `tests/wopee.robot`. Keep the last two lines of `.env.example`: without `WOPEE_SCREENSHOT_VALIDATION_ENABLED=true` and `WOPEE_DRIVER_LIBRARY` (`BrowserLibrary` or `SeleniumLibrary`) the keywords send nothing.
+Follow [Robot Framework getting started](https://docs.wopee.io/robot-framework/01-getting-started/) in the Wopee.io docs.
 
-`requirements.txt` installs `wopee_rf` from a release file rather than PyPI: the PyPI package cannot be imported yet because it does not install its `wopee_sdk` dependency.
+Install `wopee_rf` from the release file in this repository's `requirements.txt`, not with `pip install wopee_rf`: the version on PyPI cannot be imported yet (`No module named 'wopee_sdk'`).
 
 ## Troubleshooting
 
-- **`ModuleNotFoundError: No module named 'wopee_sdk'`** or **`Importing library 'wopee_rf.Standalone' failed`**: `wopee_rf` came from PyPI. Install with `pip install -r requirements.txt`.
-- **`pip install` runs for minutes or finds no `wopee_rf`**: the virtual environment uses Python older than 3.11. Delete `.venv` and create it with a newer Python.
-- **`Environment variable: WOPEE_PROJECT_UUID (missing: Field required)`**: no `.env` in the current folder. Run `robot` from the repository folder.
+- **The test passes but nothing appears in Commander** (`${track_result} = None` in `reports/log.html`): `.env` needs `WOPEE_SCREENSHOT_VALIDATION_ENABLED=true` and `WOPEE_DRIVER_LIBRARY=BrowserLibrary` (`SeleniumLibrary` for SeleniumLibrary tests). Without them wopee_rf uploads nothing.
 - **`Not Authorised!`**: the API key usually belongs to another Wopee.io instance (or another project). Create the key in the Commander you run against. `WOPEE_API_URL` is only for self-hosted instances; leave it out for cmd.wopee.io (the default is `https://api.wopee.io`).
-- **The test passes but nothing shows up in Commander**: `.env` lacks `WOPEE_SCREENSHOT_VALIDATION_ENABLED=true` or `WOPEE_DRIVER_LIBRARY=BrowserLibrary`.
+- **`make install` runs `pip` for many minutes without finishing**: `python3` is older than 3.11. Run `rm -rf .venv` and install again with a newer Python first in `PATH` (see Run locally).
+- **`WOPEE_PROJECT_UUID (missing: Field required)`**: `.env` is missing. Run `cp .env.example .env` and paste the API key.
+- **A local run is unresolved against a baseline from Commander:** expected; your screen, fonts and browser differ from Commander's runner. Keep the baseline from one place (usually Commander) and do not approve local screenshots over it. To accept small differences, set `WOPEE_PIXEL_TO_PIXEL_DIFF_TOLERANCE` in `.env`.
+- **`put-your-project-uuid-here` in `.env`**: you cloned the public template, not your project's repository. Put in your project UUID from Commander › More › Settings › API Keys (`WOPEE_PROJECT_UUID`) and your app's URL (`WOPEE_PROJECT_URL`).

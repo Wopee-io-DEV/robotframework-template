@@ -1,10 +1,5 @@
-robotframework>=7.0
-robotframework-browser>=19.0
-python-dotenv>=1.0
-# Used by test-examples/ only
+certifi
 robotframework-seleniumlibrary
+robotframework-browser
 robotframework-requests
-# wopee_rf 2.6.3 on PyPI cannot be imported: it does not declare wopee_sdk (backlog #4701).
-# This build installs wopee_rf together with its bundled wopee_sdk.
-# Replace the line with `wopee_rf` once a fixed release is on PyPI.
-wopee_rf @ https://github.com/Wopee-io/robotframework-template/releases/download/v2.5.1/wopee_rf-2.5.1.tar.gz
+https://github.com/Wopee-io/robotframework-template/releases/download/v2.5.1/wopee_rf-2.5.1.tar.gz
