@@ -30,7 +30,7 @@ make install
 make test
 ```
 
-`make install` creates `.venv`, installs `requirements.txt` and downloads the browsers for the Browser library (`rfbrowser init`, a few minutes the first time). `make test` loads `.env` and runs `tests/simple.robot`; the report is in `reports/`.
+`make install` creates `.venv`, installs `requirements.txt` and downloads the browsers for the Browser library (`rfbrowser init`, a few minutes the first time). `make test` loads `.env` and runs `tests/simple.robot`. In `reports/log.html` the `Track Fullpage` keyword logs a `Tracking response` with the step's status and a link to it in Commander.
 
 ## Review in Commander
 
@@ -62,9 +62,9 @@ Install `wopee_rf` from the release file in this repository's `requirements.txt`
 
 ## Troubleshooting
 
-- **The test passes but nothing appears in Commander** (`${track_result} = None` in `reports/log.html`): `.env` needs `WOPEE_SCREENSHOT_VALIDATION_ENABLED=true` and `WOPEE_DRIVER_LIBRARY=BrowserLibrary` (`SeleniumLibrary` for SeleniumLibrary tests). Without them wopee_rf uploads nothing.
+- **The test passes but nothing appears in Commander** (`${track_result} = None` in `reports/log.html`): `.env` is missing, or it lacks `WOPEE_SCREENSHOT_VALIDATION_ENABLED=true` and `WOPEE_DRIVER_LIBRARY=BrowserLibrary` (`SeleniumLibrary` for SeleniumLibrary tests). Without them wopee_rf uploads nothing. Run `cp .env.example .env` and paste the API key.
 - **`Not Authorised!`**: the API key usually belongs to another Wopee.io instance (or another project). Create the key in the Commander you run against. `WOPEE_API_URL` is only for self-hosted instances; leave it out for cmd.wopee.io (the default is `https://api.wopee.io`).
 - **`make install` runs `pip` for many minutes without finishing**: `python3` is older than 3.11. Run `rm -rf .venv` and install again with a newer Python first in `PATH` (see Run locally).
-- **`WOPEE_PROJECT_UUID (missing: Field required)`**: `.env` is missing. Run `cp .env.example .env` and paste the API key.
+- **`API key and project UUID are required`**: the key in `.env` is empty. Paste it after `WOPEE_API_KEY=`.
 - **A local run is unresolved against a baseline from Commander:** expected; your screen, fonts and browser differ from Commander's runner. Keep the baseline from one place (usually Commander) and do not approve local screenshots over it. To accept small differences, set `WOPEE_PIXEL_TO_PIXEL_DIFF_TOLERANCE` in `.env`.
 - **`put-your-project-uuid-here` in `.env`**: you cloned the public template, not your project's repository. Put in your project UUID from Commander › More › Settings › API Keys (`WOPEE_PROJECT_UUID`) and your app's URL (`WOPEE_PROJECT_URL`).
