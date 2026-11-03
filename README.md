@@ -58,8 +58,6 @@ A visual difference is reported in Commander; it does not fail the Robot Framewo
 
 Follow [Robot Framework getting started](https://docs.wopee.io/robot-framework/01-getting-started/) in the Wopee.io docs.
 
-Install `wopee_rf` from the release file in this repository's `requirements.txt`, not with `pip install wopee_rf`: the version on PyPI cannot be imported yet (`No module named 'wopee_sdk'`).
-
 ## Troubleshooting
 
 - **The test passes but nothing appears in Commander** (`${track_result} = None` in `reports/log.html`): `.env` is missing, or it lacks `WOPEE_SCREENSHOT_VALIDATION_ENABLED=true` and `WOPEE_DRIVER_LIBRARY=BrowserLibrary` (`SeleniumLibrary` for SeleniumLibrary tests). Without them wopee_rf uploads nothing. Run `cp .env.example .env` and paste the API key.
