@@ -66,3 +66,7 @@ Follow [Robot Framework getting started](https://docs.wopee.io/robot-framework/0
 - **`API key and project UUID are required`**: the key in `.env` is empty. Paste it after `WOPEE_API_KEY=`.
 - **A local run is unresolved against a baseline from Commander:** expected; your screen, fonts and browser differ from Commander's runner. Keep the baseline from one place (usually Commander) and do not approve local screenshots over it. To accept small differences, set `WOPEE_PIXEL_TO_PIXEL_DIFF_TOLERANCE` in `.env`.
 - **`put-your-project-uuid-here` in `.env`**: you cloned the public template, not your project's repository. Put in your project UUID from Commander › More › Settings › API Keys (`WOPEE_PROJECT_UUID`) and your app's URL (`WOPEE_PROJECT_URL`).
+
+## Maintainers
+
+Note: the runtime image bakes this repo's `main` HEAD at every runtime build and resolves the `@wopee-io/*` ranges then, so a change reaches runners only after a runtime build. See the [release flow](https://github.com/autonomous-testing/infra/blob/main/docs/release-flow.md).
