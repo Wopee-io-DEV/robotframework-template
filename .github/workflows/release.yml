@@ -1,0 +1,113 @@
+# Tag every release of this template: a merge to main with a releasable
+# conventional commit gets a semver tag (vX.Y.Z) and a GitHub release, made by
+# semantic-release. The runtime image (autonomous-testing/runtime) bakes the
+# template's dependencies by that tag, so the image records which template
+# release it carries (backlog#5115).
+#
+# This file travels with the template. Projects generated from it and the
+# mirrors infra syncs it into (Wopee-io, tenant orgs, GHE) get a copy too, so:
+#   - the job runs only in Wopee-io-DEV/robotframework-template itself; everywhere else it is skipped
+#     before it asks for a runner, and creates nothing;
+#   - the semantic-release config lives in this file, not in a .releaserc at
+#     the repository root that every generated project would inherit;
+#   - only a tag and a GitHub release are written: no CHANGELOG commit, no
+#     version bump, no comments on PRs or issues. main does not move, so the
+#     `main` ref projects are generated from and the mirrors sync stays exactly
+#     what was merged.
+#
+# Release rules: the angular preset (feat -> minor, fix/perf -> patch,
+# BREAKING CHANGE -> major), plus chore(deps) and build -> patch, because a
+# dependency bump is the change the runtime bake cares about most. docs, ci,
+# test, style, refactor and other chore commits release nothing.
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.repository == 'Wopee-io-DEV/robotframework-template'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write # push the tag, create the GitHub release
+    steps:
+      - name: Check out with full history and tags
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Write the semantic-release config
+        shell: bash
+        run: |
+          cat > "$RUNNER_TEMP/releaserc.json" <<'EOF'
+          {
+            "branches": ["main"],
+            "tagFormat": "v${version}",
+            "plugins": [
+              ["@semantic-release/commit-analyzer", {
+                "preset": "angular",
+                "releaseRules": [
+                  { "type": "chore", "scope": "deps", "release": "patch" },
+                  { "type": "build", "release": "patch" }
+                ]
+              }],
+              "@semantic-release/release-notes-generator",
+              ["@semantic-release/github", {
+                "successCommentCondition": false,
+                "failCommentCondition": false,
+                "releasedLabels": false
+              }]
+            ]
+          }
+          EOF
+          # semantic-release reads its config from the working directory only.
+          # The copy is untracked and never committed.
+          cp "$RUNNER_TEMP/releaserc.json" .releaserc.json
+
+      - name: Release
+        id: release
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          npx --yes semantic-release@25.0.9
+          tag="$(git tag --points-at HEAD | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1 || true)"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          if [ -n "$tag" ]; then
+            echo "### Released ${tag}" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### No release: no releasable commit since the last tag" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      # Optional: start a runtime build that bakes this release. Needs the
+      # repository secret RUNTIME_DISPATCH_TOKEN, a token that may write
+      # Contents of autonomous-testing/runtime. Without it the step only says
+      # so, and the next runtime build picks the tag up anyway.
+      - name: Ask the runtime to rebuild
+        if: steps.release.outputs.tag != ''
+        shell: bash
+        env:
+          TOKEN: ${{ secrets.RUNTIME_DISPATCH_TOKEN }}
+          TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          if [ -z "${TOKEN:-}" ]; then
+            echo "::notice::RUNTIME_DISPATCH_TOKEN is not set; the runtime picks up ${TAG} at its next build."
+            exit 0
+          fi
+          GH_TOKEN="$TOKEN" gh api repos/autonomous-testing/runtime/dispatches \
+            -f event_type=input-released \
+            -f "client_payload[source]=${GITHUB_REPOSITORY}@${TAG}"
